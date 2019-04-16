@@ -85,7 +85,7 @@ async function refreshBlockchain() {
                 text: moment(row.created_at).fromNow()
             }));
             $div.on('click', function() {
-                window.open(`https://stellar.expert/explorer/public/tx/${row.transaction_hash}`)
+                window.open(`https://stellar.expert/explorer/testnet/tx/${row.transaction_hash}`)
             })
             if (hot) {
                 $div.addClass("hot")
