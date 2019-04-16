@@ -43,7 +43,7 @@ async function refreshBlockchain() {
     qr.make();
     $("#user_qr").html([qr.createImgTag(4, 4, config.collateral.id)]);
 
-    $("#history").empty();
+    const histories = [];
     operations.records.forEach(function(row) {
         if (row.type == "payment") {
             let asset = null;
@@ -59,9 +59,10 @@ async function refreshBlockchain() {
             $div.on('click', function() {
                 window.open(`https://stellar.expert/explorer/public/tx/${row.transaction_hash}`)
             })
-            $div.appendTo($("#history"));
+            histories.push($div);
         }
     })
+    $("#history").html(histories);
     console.log(operations.records);
 }
 async function transXLMtoXLMC() {
