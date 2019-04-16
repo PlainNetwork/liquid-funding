@@ -54,9 +54,15 @@ async function refreshBlockchain() {
             }
             let direction = row.from == config.collateral.id ? "Sent" : "Recieve";
             let hot = new Date().getTime() - new Date(row.created_at).getTime() < 30 * 1000
-            var $div = $("<div/>", {
+            let $div = $("<div/>", {
                 "class": "hisotry-row"
-            }).text(`${direction} ${row.amount} ${asset.code}`);
+            });
+            $div.append($("<span/>",{
+                text: `${direction} ${row.amount} ${asset.code}`
+            }));
+            $div.append($("<span/>", {
+                text: `${row.created_at}`
+            }));
             $div.on('click', function() {
                 window.open(`https://stellar.expert/explorer/public/tx/${row.transaction_hash}`)
             })

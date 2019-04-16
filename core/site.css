@@ -48,12 +48,14 @@ body {
     background: #d4eef7;
     border-right: 3px solid #08b5e5;
     padding: 10px;
+    overflow: auto;
 }
 .right-form {
     width: 60%;
     height: 100%;
     box-sizing: border-box;
     padding: 10px;
+    overflow: auto;
 }
 
 .input-group {
@@ -86,6 +88,8 @@ label {
     padding: 5px;
     box-sizing: border-box;
     border-bottom: 1px solid #08b5e5;
+    display: flex;
+    justify-content: space-between;
 }
 .hisotry-row.hot {
     background: #d4eef7;
