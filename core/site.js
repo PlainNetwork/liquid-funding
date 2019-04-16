@@ -34,9 +34,9 @@ async function refreshBlockchain() {
     config.platform = platform
     config.collateral = collateral
     const min = config.collateral.subentry_count * 0.5 + 1;
-    $("#user_xlm").text((Number(findBalance(collateral, config.assetXLM).balance) - min) + config.assetXLM.code)
-    $("#user_xlmc").text((Number(findBalance(collateral, config.assetXLMC).balance)) + config.assetXLMC.code)
-    $("#user_krw").text((Number(findBalance(collateral, config.assetKRW).balance)) + config.assetKRW.code)
+    $("#user_xlm").text((Number(findBalance(collateral, config.assetXLM).balance) - min) + " " + config.assetXLM.code)
+    $("#user_xlmc").text((Number(findBalance(collateral, config.assetXLMC).balance)) + " " + config.assetXLMC.code)
+    $("#user_krw").text((Number(findBalance(collateral, config.assetKRW).balance)) + " " + config.assetKRW.code)
     $("#user_id").text(config.collateral.id);
     var qr = qrcode(0, 'L');
     qr.addData(config.collateral.id);
