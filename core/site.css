@@ -87,6 +87,9 @@ label {
     box-sizing: border-box;
     border-bottom: 1px solid #08b5e5;
 }
+.hisotry-row.hot {
+    background: #d4eef7;
+}
 .hisotry-row:last-of-type {
 
 }

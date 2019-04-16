@@ -52,13 +52,17 @@ async function refreshBlockchain() {
             } else {
                 asset = new StellarSdk.Asset(row.asset_code, row.asset_issuer)
             }
-            let direction = row.from == config.collateral.id ? "Send" : "Recieve";
+            let direction = row.from == config.collateral.id ? "Sent" : "Recieve";
+            let hot = new Date().getTime() - new Date(row.created_at).getTime() < 30 * 1000
             var $div = $("<div/>", {
                 "class": "hisotry-row"
             }).text(`${direction} ${row.amount} ${asset.code}`);
             $div.on('click', function() {
                 window.open(`https://stellar.expert/explorer/public/tx/${row.transaction_hash}`)
             })
+            if (hot) {
+                $div.addClass("hot")
+            }
             histories.push($div);
         }
     })
