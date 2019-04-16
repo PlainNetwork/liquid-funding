@@ -61,7 +61,7 @@ async function refreshBlockchain() {
                 text: `${direction} ${row.amount} ${asset.code}`
             }));
             $div.append($("<span/>", {
-                text: `${row.created_at}`
+                text: moment(row.created_at).fromNow()
             }));
             $div.on('click', function() {
                 window.open(`https://stellar.expert/explorer/public/tx/${row.transaction_hash}`)
