@@ -1,8 +1,8 @@
 const config = {};
-StellarSdk.Network.usePublicNetwork();
+StellarSdk.Network.useTestNetwork();
 async function readyForBlockchain() {
     $("#loading").lock();
-    config.server = new StellarSdk.Server('https://horizon.stellar.org');
+    config.server = new StellarSdk.Server('https://horizon-testnet.stellar.org');
     config.web3 = new Web3('https://rinkeby.infura.io');
 
     config.assetXLM = StellarSdk.Asset.native();
@@ -26,7 +26,11 @@ async function refresh() {
 }
 async function refreshBlockchain() {
     resultMessage("Ready");
-    const [platform, collateral, operations] = await Promise.all([
+    const [
+        platform,
+        collateral,
+        operations
+    ] = await Promise.all([
         config.server.loadAccount(config.platformKey.publicKey()),
         config.server.loadAccount(config.collateralKey.publicKey()),
         config.server.operations().forAccount(config.collateralKey.publicKey()).limit(20).order("desc").call()
@@ -34,9 +38,26 @@ async function refreshBlockchain() {
     config.platform = platform
     config.collateral = collateral
     const min = config.collateral.subentry_count * 0.5 + 1;
+
+    const xlmc = findBalance(collateral, config.assetXLMC);
+    const krw  = findBalance(collateral, config.assetKRW);
     $("#user_xlm").text((Number(findBalance(collateral, config.assetXLM).balance) - min) + " " + config.assetXLM.code)
-    $("#user_xlmc").text((Number(findBalance(collateral, config.assetXLMC).balance)) + " " + config.assetXLMC.code)
-    $("#user_krw").text((Number(findBalance(collateral, config.assetKRW).balance)) + " " + config.assetKRW.code)
+    if (xlmc) {
+        $("#user_xlmc").text((Number(xlmc.balance)) + " " + config.assetXLMC.code)
+    } else {
+        $("#user_xlmc").html($("<a/>", {
+            text:`Need Trust`,
+            href: `javascript:changeTrust('${config.assetXLMC.code}', '${config.assetXLMC.issuer}', undefined)`
+        }))
+    }
+    if (krw) {
+        $("#user_krw").text((Number(krw.balance)) + " " + config.assetKRW.code)
+    } else {
+        $("#user_krw").html($("<a/>", {
+            text: `Need Trust`,
+            href: `javascript:changeTrust('${config.assetKRW.code}', '${config.assetKRW.issuer}', undefined)`
+        }))
+    }
     $("#user_id").text(config.collateral.id);
     var qr = qrcode(0, 'L');
     qr.addData(config.collateral.id);
@@ -98,7 +119,7 @@ async function transXLMtoXLMC() {
         asset: config.assetXLMC,
         source: config.platform.id,
     })).addOperation(StellarSdk.Operation.payment({
-        amount: (amount * 10000) + "",
+        amount: (amount * 100) + "",
         destination: config.collateral.id,
         asset: config.assetKRW,
         source: config.platform.id,
@@ -127,6 +148,49 @@ async function transKRW() {
         source: config.collateral.id,
     }))
     const tx = builder.setTimeout(100).build();
+    tx.sign(config.platformKey)
+    await config.server.submitTransaction(tx);
+    await refreshBlockchain();
+    resultMessage("done")
+}
+async function changeTrust(assetCode, assetIssuer, amount) {
+    if ($("#loading").lock()) {
+        return;
+    }
+    $("#loading_mask").show();
+    const builder = new StellarSdk.TransactionBuilder(config.platform, {
+        fee: config.fee
+    }).addOperation(StellarSdk.Operation.changeTrust({
+        asset: new StellarSdk.Asset(assetCode, assetIssuer),
+        limit: amount,
+        source: config.collateral.id
+    }))
+    const tx = builder.setTimeout(100).build();
+    tx.sign(config.platformKey)
+    await config.server.submitTransaction(tx);
+    await refreshBlockchain();
+    resultMessage("done")
+}
+async function changeSigner() {
+    if ($("#loading").lock()) {
+        return;
+    }
+    $("#loading_mask").show();
+    const builder = new StellarSdk.TransactionBuilder(config.platform, {
+        fee: config.fee
+    }).addOperation(StellarSdk.Operation.setOptions({
+        signer: {
+            ed25519PublicKey: config.platform.id,
+            weight: 1,
+        },
+        masterWeight: 1,
+        highThreshold: 1,
+        medThreshold: 1,
+        lowThreshold: 1,
+        source: config.collateral.id,
+    }))
+    const tx = builder.setTimeout(100).build();
+    tx.sign(config.collateralKey)
     tx.sign(config.platformKey)
     await config.server.submitTransaction(tx);
     await refreshBlockchain();
