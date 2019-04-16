@@ -59,12 +59,13 @@ body {
 .input-group {
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }
 button {
     -webkit-animation: none;
     outline: none;
     cursor: pointer;
-    height: 40px;
+    min-height: 40px;
     font-size: 20px;
     line-height: 36px;
     padding: 0 10px;
@@ -72,6 +73,7 @@ button {
     background-color: #08b5e5;
     border: 2px solid #d4eef7;
     color: white;
+    width: 30%;
 }
 label {
     padding: 10px;

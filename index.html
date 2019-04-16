@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./core/tmpl.css">
     <link rel="stylesheet" href="./core/site.css">
     <title>Liquid Funding</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.1/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.7.0/jquery.lettering.min.js"></script>
@@ -28,9 +29,12 @@
     <div class="contents">
       <div class="left-form">
         <div class="input-group">
-          <button type="button" onclick="transXLMtoXLMC();">XML to XMLC</button>
           <button type="button" onclick="refresh();">Refresh</button>
-          <button type="button" onclick="transXLMCtoXLM();">XMLC to XML</button>
+        </div>
+        <div class="input-group">
+          <button type="button" onclick="transXLMtoXLMC();">XML to XMLC</button>
+          <button type="button" onclick="transXLMtoXLMC();">XML to XMLC</button>
+          <button type="button" onclick="transKRW();">KRW 출금</button>
         </div>
         <div class="input-group">
           <label id="user_xlm"></label>
@@ -38,7 +42,10 @@
           <label id="user_krw"></label>
         </div>
         <div class="input-group">
-          <label id="platform_xlm"></label>
+          <label id="user_qr"></label>
+        </div>
+        <div class="input-group">
+          <label id="user_id"></label>
         </div>
       </div>
       <div class="right-form">

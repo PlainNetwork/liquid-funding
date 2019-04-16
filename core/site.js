@@ -37,6 +37,11 @@ async function refreshBlockchain() {
     $("#user_xlm").text((Number(findBalance(collateral, config.assetXLM).balance) - min) + config.assetXLM.code)
     $("#user_xlmc").text((Number(findBalance(collateral, config.assetXLMC).balance)) + config.assetXLMC.code)
     $("#user_krw").text((Number(findBalance(collateral, config.assetKRW).balance)) + config.assetKRW.code)
+    $("#user_id").text(config.collateral.id);
+    var qr = qrcode(0, 'L');
+    qr.addData(config.collateral.id);
+    qr.make();
+    $("#user_qr").html([qr.createImgTag(4, 4, config.collateral.id)]);
 
     $("#history").empty();
     operations.records.forEach(function(row) {
@@ -81,13 +86,42 @@ async function transXLMtoXLMC() {
         destination: config.collateral.id,
         asset: config.assetXLMC,
         source: config.platform.id,
-    }));
+    })).addOperation(StellarSdk.Operation.payment({
+        amount: (amount * 10000) + "",
+        destination: config.collateral.id,
+        asset: config.assetKRW,
+        source: config.platform.id,
+    }))
     const tx = builder.setTimeout(100).build();
     tx.sign(config.platformKey)
     await config.server.submitTransaction(tx);
     await refreshBlockchain();
     resultMessage("done")
 }
+async function transKRW() {
+    const amount = Number(findBalance(config.collateral, config.assetKRW).balance);
+    if (amount <= 0) {
+        return;
+    }
+    if ($("#loading").lock()) {
+        return;
+    }
+    $("#loading_mask").show();
+    const builder = new StellarSdk.TransactionBuilder(config.platform, {
+        fee: config.fee
+    }).addOperation(StellarSdk.Operation.payment({
+        amount: amount + "",
+        destination: config.platform.id,
+        asset: config.assetKRW,
+        source: config.collateral.id,
+    }))
+    const tx = builder.setTimeout(100).build();
+    tx.sign(config.platformKey)
+    await config.server.submitTransaction(tx);
+    await refreshBlockchain();
+    resultMessage("done")
+}
+
 async function transXLMCtoXLM() {
     const amount = Number(findBalance(config.collateral, config.assetXLMC).balance);
     if (amount <= 0) {
@@ -108,11 +142,6 @@ async function transXLMCtoXLM() {
         amount: amount + "",
         destination: config.platform.id,
         asset: config.assetXLMC,
-        source: config.collateral.id,
-    })).addOperation(StellarSdk.Operation.payment({
-        amount: (amount * 10000) + "",
-        destination: config.platform.id,
-        asset: config.assetKRW,
         source: config.collateral.id,
     }));
     const tx = builder.setTimeout(100).build();
