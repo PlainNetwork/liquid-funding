@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=1024, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700&amp;subset=korean" rel="stylesheet">
+    <link rel="stylesheet" href="./core/tmpl.css">
+    <link rel="stylesheet" href="./core/site.css">
+    <title>Liquid Funding</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.7.0/jquery.lettering.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.15.0/stellar-sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
+    <script src="./core/tmpl.js"></script>
+    <script src="./core/site.js"></script>
+  </head>
+  <body>
+    <div id="loading_mask">
+      <div class="container" id="loading">
+        <div class="box">
+          In loading ...
+        </div>
+      </div>
+    </div>
+    <div class="contents">
+      <div class="left-form">
+        <div class="input-group">
+          <button type="button" onclick="transXLMtoXLMC();">XML to XMLC</button>
+          <button type="button" onclick="refresh();">Refresh</button>
+          <button type="button" onclick="transXLMCtoXLM();">XMLC to XML</button>
+        </div>
+        <div class="input-group">
+          <label id="user_xlm"></label>
+          <label id="user_xlmc"></label>
+          <label id="user_krw"></label>
+        </div>
+        <div class="input-group">
+          <label id="platform_xlm"></label>
+        </div>
+      </div>
+      <div class="right-form">
+        <div id="history">
+
+        </div>
+      </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            readyForBlockchain();
+        });
+    </script>
+  </body>
+</html>
